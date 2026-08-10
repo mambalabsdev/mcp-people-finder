@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mamba-people-finder": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mambalabsdev/mcp-people-finder"
+      ],
+      "env": {
+        "APIFY_TOKEN": "your-apify-token"
+      }
+    }
+  }
+}

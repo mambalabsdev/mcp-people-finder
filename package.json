@@ -1,12 +1,18 @@
 {
   "name": "@mambalabsdev/mcp-people-finder",
   "displayName": "People Finder & Email Verifier",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for the Mamba Labs People Finder & Email Verifier actor on Apify. Finds people at a company by role, seniority and department, and returns structured contact records with optional verified business email.",
   "type": "module",
   "bin": {
     "mcp-people-finder": "./build/index.js"
   },
+  "files": [
+    "build",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
   "scripts": {
     "build": "tsc && chmod +x build/index.js",
     "prepublishOnly": "npm run build"

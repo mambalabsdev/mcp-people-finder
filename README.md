@@ -40,18 +40,18 @@ Give it a company domain, name or LinkedIn URL and it returns the people at that
 | `company_name` | string | no | Used when no domain is available, or as a disambiguation hint alongside a domain. |
 | `linkedin_company_url` | string | no | Example: https://www.linkedin.com/company/stripe. Skips internal company resolution when provided. |
 | `domains` | array | no | Optional list of bare domains. Takes precedence over the single domain field. Each domain is searched independently and every output row echoes its source domain. |
-| `targetCount` | integer | no | Maximum people to return per company. Billing is per person actually returned, so a lower number is a hard cost cap. |
+| `targetCount` | integer | no | Maximum people to return per company. Billing is per person actually returned, so a lower number is a hard cost cap. Default: 5. |
 | `jobTitles` | array | no | Case-insensitive substring match against the person's current title. Any match qualifies. Leave empty for no title filter. Example: VP Sales, Head of Growth |
 | `excludeJobTitles` | array | no | Case-insensitive substring match. A person matching any of these is dropped even if they matched an include. Example: intern, assistant, former |
 | `seniority` | array | no | Filter to these normalized seniority levels. Leave empty for all. |
 | `departments` | array | no | Filter to these normalized departments. Leave empty for all. |
 | `countries` | array | no | ISO 3166-1 alpha-2 codes. Filters to people located in these countries. Example: US, GB, NL |
-| `includeEmails` | boolean | no | Discover a business email for each person found, using your Icypeas and/or Prospeo keys. Billed only when an email is actually returned. Turn off to build an org map cheaply. |
-| `verifyEmails` | boolean | no | Check deliverability of each email found, escalating catch-all domains to a second provider for a definitive answer. Requires a Reoon and/or BounceBan key. |
-| `verifyPosition` | boolean | no | Check that the person still holds the returned title at the target company, and report the reasoning. Reduces bounced outreach to people who have moved on. |
+| `includeEmails` | boolean | no | Discover a business email for each person found, using your Icypeas and/or Prospeo keys. Billed only when an email is actually returned. Turn off to build an org map cheaply. Default: true. |
+| `verifyEmails` | boolean | no | Check deliverability of each email found, escalating catch-all domains to a second provider for a definitive answer. Requires a Reoon and/or BounceBan key. Default: true. |
+| `verifyPosition` | boolean | no | Check that the person still holds the returned title at the target company, and report the reasoning. Reduces bounced outreach to people who have moved on. Default: false. |
 | `suppressLinkedInUrls` | array | no | LinkedIn profile URLs to exclude from results. Use to suppress already-contacted prospects or honor data subject removal requests. |
-| `batchSize` | integer | no | How many companies to search concurrently in batch mode. Default 5, maximum 10. |
-| `skipCache` | boolean | no | Results are cached for 7 days and reused on repeat lookups. Set true to force a fresh search. |
+| `batchSize` | integer | no | How many companies to search concurrently in batch mode. Default 5, maximum 10. Default: 5. |
+| `skipCache` | boolean | no | Results are cached for 7 days and reused on repeat lookups. Set true to force a fresh search. Default: false. |
 | `serpApiKey` | string | no | Serper.dev API key. Unlocks the search layer, which is the highest-coverage source of LinkedIn profile URLs. Without it this actor falls back to company website parsing only, which returns far fewer people. Get a key at https://serper.dev. You are billed by Serper for searches; this actor does not mark them up. |
 | `prospeoApiKey` | string | no | Second provider in the email waterfall. Used only for people the first provider could not resolve. Get a key at https://prospeo.io. Billed to you by Prospeo; this actor does not mark it up. |
 | `reoonApiKey` | string | no | Primary email verification. Returns deliverability status for each discovered address. Get a key at https://emailverifier.reoon.com. Billed to you by Reoon. |

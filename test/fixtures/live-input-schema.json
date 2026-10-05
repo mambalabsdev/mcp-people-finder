@@ -1,0 +1,197 @@
+{
+  "title": "People Finder",
+  "description": "Find people at a company by role, seniority, and department. Provide a domain, company name, or LinkedIn company URL. Returns structured contact records with LinkedIn URL, normalized seniority and department, and optional verified email. Free Apify-plan users get 50 people per calendar month (resets monthly); upgrade for unlimited: https://apify.com/pricing?fpr=mamba",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "domain": {
+      "title": "Company Domain",
+      "type": "string",
+      "description": "Bare domain without https:// or trailing slash. Example: stripe.com",
+      "prefill": "stripe.com",
+      "editor": "textfield"
+    },
+    "company_name": {
+      "title": "Company Name (optional)",
+      "type": "string",
+      "description": "Used when no domain is available, or as a disambiguation hint alongside a domain.",
+      "editor": "textfield"
+    },
+    "linkedin_company_url": {
+      "title": "LinkedIn Company URL (optional)",
+      "type": "string",
+      "description": "Example: https://www.linkedin.com/company/stripe. Skips internal company resolution when provided.",
+      "editor": "textfield"
+    },
+    "domains": {
+      "title": "Company Domains (batch)",
+      "type": "array",
+      "description": "Optional list of bare domains. Takes precedence over the single domain field. Each domain is searched independently and every output row echoes its source domain.",
+      "editor": "stringList"
+    },
+    "targetCount": {
+      "title": "People Per Company",
+      "type": "integer",
+      "description": "Maximum people to return per company. Billing is per person actually returned, so a lower number is a hard cost cap.",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 100,
+      "editor": "number"
+    },
+    "jobTitles": {
+      "title": "Job Titles To Include",
+      "type": "array",
+      "description": "Case-insensitive substring match against the person's current title. Any match qualifies. Leave empty for no title filter. Example: VP Sales, Head of Growth",
+      "editor": "stringList"
+    },
+    "excludeJobTitles": {
+      "title": "Job Titles To Exclude",
+      "type": "array",
+      "description": "Case-insensitive substring match. A person matching any of these is dropped even if they matched an include. Example: intern, assistant, former",
+      "editor": "stringList"
+    },
+    "seniority": {
+      "title": "Seniority Levels",
+      "type": "array",
+      "description": "Filter to these normalized seniority levels. Leave empty for all.",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "founder",
+          "c_suite",
+          "vp",
+          "director",
+          "head",
+          "manager",
+          "senior",
+          "individual_contributor",
+          "entry"
+        ]
+      }
+    },
+    "departments": {
+      "title": "Departments",
+      "type": "array",
+      "description": "Filter to these normalized departments. Leave empty for all.",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "executive",
+          "sales",
+          "marketing",
+          "revops",
+          "customer_success",
+          "product",
+          "engineering",
+          "design",
+          "finance",
+          "hr",
+          "legal",
+          "it",
+          "operations",
+          "other"
+        ]
+      }
+    },
+    "countries": {
+      "title": "Countries",
+      "type": "array",
+      "description": "ISO 3166-1 alpha-2 codes. Filters to people located in these countries. Example: US, GB, NL",
+      "editor": "stringList"
+    },
+    "includeEmails": {
+      "title": "Find Email Addresses",
+      "type": "boolean",
+      "description": "Discover a business email for each person found, using your Icypeas and/or Prospeo keys. Billed only when an email is actually returned. Turn off to build an org map cheaply.",
+      "default": true,
+      "editor": "checkbox"
+    },
+    "verifyEmails": {
+      "title": "Verify Email Addresses",
+      "type": "boolean",
+      "description": "Check deliverability of each email found, escalating catch-all domains to a second provider for a definitive answer. Requires a Reoon and/or BounceBan key.",
+      "default": true,
+      "editor": "checkbox"
+    },
+    "verifyPosition": {
+      "title": "Verify Position Is Current",
+      "type": "boolean",
+      "description": "Check that the person still holds the returned title at the target company, and report the reasoning. Reduces bounced outreach to people who have moved on.",
+      "default": false,
+      "editor": "checkbox"
+    },
+    "suppressLinkedInUrls": {
+      "title": "Suppress These LinkedIn URLs",
+      "type": "array",
+      "description": "LinkedIn profile URLs to exclude from results. Use to suppress already-contacted prospects or honor data subject removal requests.",
+      "editor": "stringList"
+    },
+    "batchSize": {
+      "title": "Batch Size",
+      "type": "integer",
+      "description": "How many companies to search concurrently in batch mode. Default 5, maximum 10.",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 10,
+      "editor": "number"
+    },
+    "skipCache": {
+      "title": "Skip Cache",
+      "type": "boolean",
+      "description": "Results are cached for 7 days and reused on repeat lookups. Set true to force a fresh search.",
+      "default": false,
+      "editor": "checkbox"
+    },
+    "serpApiKey": {
+      "title": "Search API Key (optional)",
+      "type": "string",
+      "description": "Serper.dev API key. Unlocks the search layer, which is the highest-coverage source of LinkedIn profile URLs. Without it this actor falls back to company website parsing only, which returns far fewer people. Get a key at https://serper.dev. You are billed by Serper for searches; this actor does not mark them up.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "prospeoApiKey": {
+      "title": "Prospeo API Key (optional)",
+      "type": "string",
+      "description": "Second provider in the email waterfall. Used only for people the first provider could not resolve. Get a key at https://prospeo.io. Billed to you by Prospeo; this actor does not mark it up.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "reoonApiKey": {
+      "title": "Reoon API Key (optional)",
+      "type": "string",
+      "description": "Primary email verification. Returns deliverability status for each discovered address. Get a key at https://emailverifier.reoon.com. Billed to you by Reoon.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "bounceBanApiKey": {
+      "title": "BounceBan API Key (optional)",
+      "type": "string",
+      "description": "Catch-all resolution. Used only when the primary verifier returns catch-all or risky, to determine whether that specific mailbox exists. Get a key at https://bounceban.com. Billed to you by BounceBan.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "icypeasApiKey": {
+      "title": "Icypeas API Key (optional)",
+      "type": "string",
+      "description": "Optional. Only used for the licensed-database fallback layer, which runs when the company website and public search results do not yield enough people. Leave empty to skip that layer entirely; the run still succeeds and reports any shortfall in the summary.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "claudeApiKey": {
+      "title": "Claude API Key (optional)",
+      "type": "string",
+      "description": "Optional. Only used to classify job titles that the built-in rule table cannot place into a seniority and department. One batched call per run, never per person. Leave empty to leave those two fields null on the affected rows.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "source_tag": {
+      "title": "Source Tag",
+      "type": "string",
+      "description": "Internal attribution tag set by Mamba Labs on published task examples. Not required, and nothing depends on it. Leave it empty.",
+      "editor": "hidden"
+    }
+  },
+  "required": []
+}

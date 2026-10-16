@@ -6,6 +6,16 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
+// Optional per call spending cap, passed through to the actor's own max_charge_usd
+// input. The actor enforces it; this wrapper only forwards it when set.
+const MAX_CHARGE_USD = z
+  .number()
+  .min(0)
+  .optional()
+  .describe(
+    "Optional spending cap for this call, in USD, passed to the actor as max_charge_usd. The run stops before any charge that would take it past this amount and keeps every row already charged. Leave empty to rely only on the maximum charge per run set on your Apify account.",
+  );
+
 const here = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(
   readFileSync(join(here, "..", "package.json"), "utf8"),
@@ -196,7 +206,7 @@ server.registerTool(
       "Find people at a company and optionally discover and verify their business email. Identify the company by bare domain, by company name, by LinkedIn company URL, or pass a list of domains to run a batch where every output row echoes its source domain. Results are filtered by job title include and exclude lists, by normalized seniority, by normalized department and by country. A four layer cascade runs the company website, public search and a licensed database fallback, with company match scoring on every candidate; nothing here scrapes LinkedIn directly. Email discovery runs a two provider waterfall and verification escalates catch all domains to a second provider for a definitive answer. Provider keys are yours: you supply them, the vendors bill you directly, and the actor does not mark them up. Without a Serper key the search layer is off and coverage drops sharply. targetCount is a hard cost cap because billing is per person actually returned. Requires an APIFY_TOKEN and consumes Apify credits. Read only: it finds and verifies, it writes nothing.",
     annotations: {
       title: "Find People and Emails",
-      readOnlyHint: true,
+      readOnlyHint: false,
       destructiveHint: false,
       idempotentHint: true,
       openWorldHint: true,
@@ -224,6 +234,7 @@ server.registerTool(
     bounceBanApiKey: z.string().optional().describe("Catch-all resolution. Used only when the primary verifier returns catch-all or risky, to determine whether that specific mailbox exists. Get a key at https://bounceban.com. Billed to you by BounceBan."),
     icypeasApiKey: z.string().optional().describe("Optional. Only used for the licensed-database fallback layer, which runs when the company website and public search results do not yield enough people. Leave empty to skip that layer entirely; the run still succeeds and reports any shortfall in the summary."),
     claudeApiKey: z.string().optional().describe("Optional. Only used to classify job titles that the built-in rule table cannot place into a seniority and department. One batched call per run, never per person. Leave empty to leave those two fields null on the affected rows."),
+      max_charge_usd: MAX_CHARGE_USD,
     },
   },
   async (args) =>

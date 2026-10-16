@@ -1,7 +1,7 @@
 {
   "name": "mcp-people-finder",
   "displayName": "People Finder & Email Verifier",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "MCP server for the Mamba Labs People Finder & Email Verifier actor on Apify. Finds people at a company by role, seniority and department, and returns structured contact records with optional verified business email.",
   "author": {
     "name": "Mamba Labs",

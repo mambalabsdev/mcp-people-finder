@@ -58,12 +58,25 @@ Give it a company domain, name or LinkedIn URL and it returns the people at that
 | `bounceBanApiKey` | string | no | Catch-all resolution. Used only when the primary verifier returns catch-all or risky, to determine whether that specific mailbox exists. Get a key at https://bounceban.com. Billed to you by BounceBan. |
 | `icypeasApiKey` | string | no | Optional. Only used for the licensed-database fallback layer, which runs when the company website and public search results do not yield enough people. Leave empty to skip that layer entirely; the run still succeeds and reports any shortfall in the summary. |
 | `claudeApiKey` | string | no | Optional. Only used to classify job titles that the built-in rule table cannot place into a seniority and department. One batched call per run, never per person. Leave empty to leave those two fields null on the affected rows. |
+| `max_charge_usd` | number | no | Optional spending cap for this call, in USD. The actor stops before any charge that would take the run past this amount and keeps every row already charged. |
 
 ## Billing
 
 You are charged per company searched, per person found, per email found, per email verified, per position verified and per SERP query, plus a small actor start fee. A lower targetCount is a hard cost cap.
 
-Pricing is on the [actor's Apify page](https://apify.com/mambalabs/people-finder). Running this server consumes Apify credits.
+Prices from the live pricing record, read 2026-10-16:
+
+| Event | Price per event (USD) | Fires when |
+| --- | --- | --- |
+| `apify-actor-start` | $0.00005 | Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event). |
+| `company-searched` | $0.02 on the Free plan, down to $0.017 on higher Apify plans | Charged per company domain processed through the cascade |
+| `person-found` | $0.02 on the Free plan, down to $0.017 on higher Apify plans | Charged per person returned in the final dataset |
+| `email-found` | $0.04 on the Free plan, down to $0.034 on higher Apify plans | Charged when an email is discovered via Icypeas or Prospeo |
+| `email-verified` | $0.015 on the Free plan, down to $0.01275 on higher Apify plans | Charged when an email is verified through Reoon or BounceBan |
+| `position-verified` | $0.015 on the Free plan, down to $0.01275 on higher Apify plans | Charged when a title is verified via AI classification |
+| `serp-query` | $0.003 on the Free plan, down to $0.00255 on higher Apify plans | Charged per search engine query sent through the caller's API key |
+
+The current price is on the [actor's Apify page](https://apify.com/mambalabs/people-finder). Running this server consumes Apify credits.
 
 ## What this server does and does not do
 

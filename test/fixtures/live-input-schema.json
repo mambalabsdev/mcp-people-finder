@@ -111,7 +111,7 @@
     "verifyEmails": {
       "title": "Verify Email Addresses",
       "type": "boolean",
-      "description": "Check deliverability of each email found, escalating catch-all domains to a second provider for a definitive answer. Requires a Reoon and/or BounceBan key.",
+      "description": "Check deliverability of each email found with BounceBan, including mailboxes behind catch-all domains. Requires a BounceBan key.",
       "default": true,
       "editor": "checkbox"
     },
@@ -158,17 +158,10 @@
       "editor": "textfield",
       "isSecret": true
     },
-    "reoonApiKey": {
-      "title": "Reoon API Key (optional)",
-      "type": "string",
-      "description": "Primary email verification. Returns deliverability status for each discovered address. Get a key at https://emailverifier.reoon.com. Billed to you by Reoon.",
-      "editor": "textfield",
-      "isSecret": true
-    },
     "bounceBanApiKey": {
       "title": "BounceBan API Key (optional)",
       "type": "string",
-      "description": "Catch-all resolution. Used only when the primary verifier returns catch-all or risky, to determine whether that specific mailbox exists. Get a key at https://bounceban.com. Billed to you by BounceBan.",
+      "description": "Email verification. Checks every discovered address once, including mailboxes behind catch-all domains. Get a key at https://bounceban.com. Billed to you by BounceBan; this actor does not mark it up.",
       "editor": "textfield",
       "isSecret": true
     },

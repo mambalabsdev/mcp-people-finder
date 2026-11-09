@@ -49,15 +49,14 @@ Give it a company domain, name or LinkedIn URL and it returns the people at that
 | `departments` | array | no | Filter to these normalized departments. Leave empty for all. |
 | `countries` | array | no | ISO 3166-1 alpha-2 codes. Filters to people located in these countries. Example: US, GB, NL |
 | `includeEmails` | boolean | no | Discover a business email for each person found, using your Icypeas and/or Prospeo keys. Billed only when an email is actually returned. Turn off to build an org map cheaply. Default: true. |
-| `verifyEmails` | boolean | no | Check deliverability of each email found, escalating catch-all domains to a second provider for a definitive answer. Requires a Reoon and/or BounceBan key. Default: true. |
+| `verifyEmails` | boolean | no | Check deliverability of each email found with BounceBan, including mailboxes behind catch-all domains. Requires a BounceBan key. Default: true. |
 | `verifyPosition` | boolean | no | Check that the person still holds the returned title at the target company, and report the reasoning. Reduces bounced outreach to people who have moved on. Default: false. |
 | `suppressLinkedInUrls` | array | no | LinkedIn profile URLs to exclude from results. Use to suppress already-contacted prospects or honor data subject removal requests. |
 | `batchSize` | integer | no | How many companies to search concurrently in batch mode. Default 5, maximum 10. Default: 5. |
 | `skipCache` | boolean | no | Results are cached for 7 days and reused on repeat lookups. Set true to force a fresh search. Default: false. |
 | `serpApiKey` | string | no | Serper.dev API key. Unlocks the search layer, which is the highest-coverage source of LinkedIn profile URLs. Without it this actor falls back to company website parsing only, which returns far fewer people. Get a key at https://serper.dev. You are billed by Serper for searches; this actor does not mark them up. |
 | `prospeoApiKey` | string | no | Second provider in the email waterfall. Used only for people the first provider could not resolve. Get a key at https://prospeo.io. Billed to you by Prospeo; this actor does not mark it up. |
-| `reoonApiKey` | string | no | Primary email verification. Returns deliverability status for each discovered address. Get a key at https://emailverifier.reoon.com. Billed to you by Reoon. |
-| `bounceBanApiKey` | string | no | Catch-all resolution. Used only when the primary verifier returns catch-all or risky, to determine whether that specific mailbox exists. Get a key at https://bounceban.com. Billed to you by BounceBan. |
+| `bounceBanApiKey` | string | no | Email verification. Checks every discovered address once, including mailboxes behind catch-all domains. Get a key at https://bounceban.com. Billed to you by BounceBan; this actor does not mark it up. |
 | `icypeasApiKey` | string | no | Optional. Only used for the licensed-database fallback layer, which runs when the company website and public search results do not yield enough people. Leave empty to skip that layer entirely; the run still succeeds and reports any shortfall in the summary. |
 | `claudeApiKey` | string | no | Optional. Only used to classify job titles that the built-in rule table cannot place into a seniority and department. One batched call per run, never per person. Leave empty to leave those two fields null on the affected rows. |
 | `max_charge_usd` | number | no | Optional spending cap for this call, in USD. The actor stops before any charge that would take the run past this amount and keeps every row already charged. |
@@ -74,7 +73,7 @@ Prices from the live pricing record, read 2026-10-16:
 | `company-searched` | $0.02 on the Free plan, down to $0.017 on higher Apify plans | Charged per company domain processed through the cascade |
 | `person-found` | $0.02 on the Free plan, down to $0.017 on higher Apify plans | Charged per person returned in the final dataset |
 | `email-found` | $0.04 on the Free plan, down to $0.034 on higher Apify plans | Charged when an email is discovered via Icypeas or Prospeo |
-| `email-verified` | $0.015 on the Free plan, down to $0.01275 on higher Apify plans | Charged when an email is verified through Reoon or BounceBan |
+| `email-verified` | $0.015 on the Free plan, down to $0.01275 on higher Apify plans | Charged when an email is verified through BounceBan |
 | `position-verified` | $0.015 on the Free plan, down to $0.01275 on higher Apify plans | Charged when a title is verified via AI classification |
 | `serp-query` | $0.003 on the Free plan, down to $0.00255 on higher Apify plans | Charged per search engine query sent through the caller's API key |
 
